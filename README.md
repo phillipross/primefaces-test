@@ -48,6 +48,10 @@ See the [quickstart guide for running in Visual Studio Code](./vscode-quickstart
 ### Running with Payara
 ***
 
-The branch `payara5` contains a PrimeFaces Test setup to run against a JavaEE/JakartaEE v8 profile using Payara v5 and the bundled
- Mojarra implementation of the Faces specification.  When using this setup, it is possible to use the `payara-micro:start` command
- and navigate to <strong>http://localhost:8080/</strong> to run the page.
+The branch `payara5` contains a PrimeFaces Test setup to run against a JavaEE/JakartaEE v8 profile using Payara v5 and the bundled Mojarra implementation of the Faces specification.  When using this setup, it is possible to use the `payara-micro:start` command and navigate to <strong>http://localhost:8080/</strong> to run the page.
+
+`mvn clean install payara-micro:start -Ppayara5`
+
+By default, the application runs on port 8080 but if you would like to use a different port you can pass `-Ddeploy.http.port=8765` like:
+
+`mvn clean verify payara-micro:start -Ppayara5 -Ddeploy.http.port=8765`

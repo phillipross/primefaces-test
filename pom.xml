@@ -12,12 +12,18 @@
         <maven.min.version>3.2.5</maven.min.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- dependency versions -->
+        <dependency.jakartaee-api.version>8.0.0</dependency.jakartaee-api.version>
+        <dependency.jetty.version>9.4.55.v20240627</dependency.jetty.version>
         <dependency.lombok.version>1.18.34</dependency.lombok.version>
+        <dependency.owb.version>2.0.27</dependency.owb.version>
+        <dependency.payara5.version>5.2022.5</dependency.payara5.version>
         <dependency.primefaces.version>14.0.4</dependency.primefaces.version>
         <!-- plugin versions -->
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+        <!-- <payara-micro-maven-plugin.version>2.0</payara-micro-maven-plugin.version> --> <!-- v2.0 is the latest version that works with java8 -->
+        <payara-micro-maven-plugin.version>2.4</payara-micro-maven-plugin.version> <!-- v2.1 and later work w/ java11+ -->
     </properties>
     <dependencies>
         <dependency>
@@ -115,8 +121,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <owb.version>2.0.27</owb.version>
-                <jetty.version>9.4.55.v20240627</jetty.version>
                 <jetty.host>0.0.0.0</jetty.host>
                 <jetty.port>8080</jetty.port>
             </properties>
@@ -168,22 +172,22 @@
                 <dependency>
                     <groupId>org.apache.openwebbeans</groupId>
                     <artifactId>openwebbeans-impl</artifactId>
-                    <version>${owb.version}</version>
+                    <version>${dependency.owb.version}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.openwebbeans</groupId>
                     <artifactId>openwebbeans-jsf</artifactId>
-                    <version>${owb.version}</version>
+                    <version>${dependency.owb.version}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.openwebbeans</groupId>
                     <artifactId>openwebbeans-web</artifactId>
-                    <version>${owb.version}</version>
+                    <version>${dependency.owb.version}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.openwebbeans</groupId>
                     <artifactId>openwebbeans-el22</artifactId>
-                    <version>${owb.version}</version>
+                    <version>${dependency.owb.version}</version>
                 </dependency>
                 <dependency>
                     <groupId>org.apache.bval</groupId>
@@ -192,11 +196,15 @@
                 </dependency>
             </dependencies>
             <build>
+                <filters>
+                    <filter>${basedir}/src/main/conf/mojarra.properties</filter>
+                    <filter>${basedir}/src/main/conf/openwebbeans.properties</filter>
+                </filters>
                 <plugins>
                     <plugin>
                         <groupId>org.eclipse.jetty</groupId>
                         <artifactId>jetty-maven-plugin</artifactId>
-                        <version>${jetty.version}</version>
+                        <version>${dependency.jetty.version}</version>
                         <configuration>
                             <webAppConfig>
                                 <contextPath>/</contextPath>
@@ -270,6 +278,63 @@
                 <filters>
                     <filter>${project.basedir}/src/main/conf/mojarra.properties</filter>
                 </filters>
+            </build>
+        </profile>
+        <profile>
+            <id>payara5</id>
+            <properties>
+                <deploy.http.port>8080</deploy.http.port>
+            </properties>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>fish.payara.api</groupId>
+                        <artifactId>payara-bom</artifactId>
+                        <version>${dependency.payara5.version}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>fish.payara.extras</groupId>
+                    <artifactId>payara-micro</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.platform</groupId>
+                    <artifactId>jakarta.jakartaee-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <filters>
+                    <filter>${basedir}/src/main/conf/payara.properties</filter>
+                </filters>
+                <plugins>
+                    <plugin>
+                        <groupId>fish.payara.maven.plugins</groupId>
+                        <artifactId>payara-micro-maven-plugin</artifactId>
+                        <version>${payara-micro-maven-plugin.version}</version>
+                        <configuration>
+                            <payaraVersion>${dependency.payara5.version}</payaraVersion>
+                            <deployWar>true</deployWar>
+                            <commandLineOptions>
+                                <option>
+                                    <key>--disablephonehome</key>
+                                </option>
+                                <option>
+                                    <key>--port</key>
+                                    <value>${deploy.http.port}</value>
+                                </option>
+                                <option>
+                                    <key>--nocluster</key>
+                                </option>
+                            </commandLineOptions>
+                            <contextRoot>/</contextRoot>
+                        </configuration>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
     </profiles>
