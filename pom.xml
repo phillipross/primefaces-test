@@ -12,7 +12,7 @@
         <maven.min.version>3.2.5</maven.min.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- dependency version properties -->
-        <primefaces.version>15.0.4</primefaces.version>
+        <primefaces.version>15.0.5</primefaces.version>
 
         <bval-jsr.version>2.0.6</bval-jsr.version>
         <el-api.version>3.0.0</el-api.version>
