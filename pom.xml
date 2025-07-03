@@ -37,7 +37,7 @@
         <payara5.port>8080</payara5.port>
         <!-- plugin versions -->
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-        <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
+        <maven-enforcer-plugin.version>3.6.0</maven-enforcer-plugin.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <payara-micro-maven-plugin.version>2.4</payara-micro-maven-plugin.version> <!-- v2.0 is the latest version that works with java8 / v2.1 and later work w/ java11+ -->
     </properties>
